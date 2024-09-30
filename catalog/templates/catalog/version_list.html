@@ -1,0 +1,32 @@
+{% extends 'catalog/base.html' %}
+{% load custom_tags %}
+{% block content %}
+    <div class="row text-center">
+        <table class="table table-striped">
+            <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Номер</th>
+        <th scope="col">Текущая</th>
+        <th scope="col">Действия</th>
+      </tr>
+    </thead>
+            <tbody>
+                {% for version in object_list %}
+                    <tr>
+                      <th scope="row">{{ version.pk }}</th>
+                      <td>{{ version.name }}</td>
+                      <td>{{ version.number }}</td>
+                      <td>{{ version.is_current }}</td>
+                      <td>
+                        <a class="btn btn-warning  btn-sm mr-10" href="{% url 'catalog:version_update' version.pk %}">Изменить</a>
+                        <a class="btn btn-danger btn-sm mr-10" href="{% url 'catalog:version_delete' version.pk %}">Удалить</a>
+                      </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a class="btn btn-info btn-sm mb-10 mt-10" href="{% url 'catalog:version_create' %}">Добавить версию</a>
+    </div>
+{% endblock content%}

@@ -2,11 +2,16 @@
 {% load custom_tags %}
 {% block content %}
     <div class="row text-center">
-        {% for product in object_list %}
-         <div class="col-3">
+        {% for product, version in object_list.items %}
+         <div class="col-4">
             <div class="card mb-4 box-shadow">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
+                    {% if version is not None%}
+                        <p class="card-title pricing-card-title">{{ version }}</p>
+                    {% else %}
+                        <p class="card-title pricing-card-title">Нет версии</p>
+                    {% endif %}
                 </div>
                 <div class="card-body">
                     <p class="card-title pricing-card-title">{{ product.price|floatformat:1 }}</p>
@@ -15,8 +20,11 @@
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <li>{{ product.description|truncatechars:100 }}</li>
                     </ul>
-                    <a type="button" class="btn btn-lg btn-block btn-outline-primary" href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
+                    <a type="button" class="btn btn-lg btn-block btn-outline-primary mb-2" href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a>
+                    <button type="button" class="btn btn-lg btn-block btn-outline-primary mb-2">Купить</button>
+                    <a type="button" class="btn btn-lg btn-block btn-outline-warning mb-2" href="{% url 'catalog:product_update' product.pk %}">Изменить</a>
+                    <a type="button" class="btn btn-lg btn-block btn-outline-success mb-2" href="{% url 'catalog:product_create' %}">Добавить</a>
+                    <a type="button" class="btn btn-lg btn-block btn-outline-danger mb-2" href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
                 </div>
             </div>
         </div>
