@@ -6,6 +6,8 @@ from django.db import models
 from django.db.models import ForeignKey, BooleanField
 from django.forms import CharField, FloatField
 
+from users.models import User
+
 NULLABLE = {'blank': True, 'null': True}
 
 class Category(models.Model):
@@ -27,6 +29,7 @@ class Product(models.Model):
     price = models.FloatField(verbose_name='цена')
     created_at = models.DateTimeField(auto_now_add=True , verbose_name='время создания')
     updated_at =models.DateTimeField(auto_now_add=True, verbose_name='время последнего изменениязшз')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name='пользователь')
 
     class Meta:
         verbose_name = 'продукт'

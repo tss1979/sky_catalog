@@ -1,8 +1,10 @@
 from itertools import product
 
 from PIL.ImageCms import versions
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.backends.mysql.base import version
 from django.shortcuts import render
+from django.template.context_processors import request
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, ListView, TemplateView, UpdateView, DeleteView
 
@@ -27,17 +29,23 @@ class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:products')
 
-class ProductUpdateView(UpdateView):
+    def form_valid(self, form):
+        product_form = form.save(commit=False)
+        product_form.user = self.request.user
+        return super().form_valid(product_form)
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:products')
 
-class ProductDeleteView(DeleteView):
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:products')
 
