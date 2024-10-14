@@ -29,11 +29,17 @@ class Product(models.Model):
     price = models.FloatField(verbose_name='цена')
     created_at = models.DateTimeField(auto_now_add=True , verbose_name='время создания')
     updated_at =models.DateTimeField(auto_now_add=True, verbose_name='время последнего изменениязшз')
-    user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name='пользователь')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
+    is_published = models.BooleanField(default=True, verbose_name='опубликовано')
 
     class Meta:
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
+        permissions = [
+            ('update_published_status', 'Can cancel publish product'),
+            ('update_description', 'Can update product description'),
+            ('change_category', 'Can change product category')
+        ]
 
     def __str__(self):
         return f'{self.name}({self.category})'

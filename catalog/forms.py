@@ -16,7 +16,7 @@ class FormStylesMixin:
 class ProductForm(FormStylesMixin, forms.ModelForm):
     class Meta:
         model = Product
-        fields = ('name', 'category', 'description','price', 'image')
+        fields = ('name', 'category', 'description','price', 'image',)
 
     def clean_name(self):
         words_prohibited = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево',\
@@ -28,6 +28,12 @@ class ProductForm(FormStylesMixin, forms.ModelForm):
             if word.lower() in words_prohibited:
                 raise forms.ValidationError('Недопустимые слова в названии')
         return cleaned_data
+
+class ProductModeratorForm(FormStylesMixin, forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ('description', 'category', 'is_published',)
+
 
 
 

@@ -1,30 +1,14 @@
 import random
 
-from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView
 
 from config import settings
 from users.forms import UserRegisterForm, UserProfileForm, EmailForm
 from users.models import User
-
-
-class LoginView(object):
-    def get(self, request):
-        return render(request, '/users/login.html')
-
-    def post(self, request):
-        username = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(request, email=username, password=password)
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect('/')
-        else:
-            return render(request, '/users/login.html', {'error': 'Неверное имя пользователя или пароль.'})
 
 
 

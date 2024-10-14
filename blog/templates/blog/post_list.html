@@ -10,7 +10,9 @@
                     <h5 class="card-title">{{ post.title }} </h5>
                     <p class="card-text">{{ post.content }}</p>
                     <a href="{% url 'blog:post_detail' post.pk %}" class="btn btn-primary">Просмотреть пост</a>
-                    <a href="{% url 'blog:post_delete' post.pk %}" class="btn btn-danger">Удалить пост</a>
+                    {% if perms.blog.delete_post %}
+                        <a href="{% url 'blog:post_delete' post.pk %}" class="btn btn-danger">Удалить пост</a>
+                    {% endif %}
                   </div>
             </div>
         {% endfor %}
@@ -18,6 +20,8 @@
 {% else %}
     <p>Нет постов</p>
 {% endif %}
-<a class="btn btn-success" href="{% url 'blog:post_create' %}">Добавить новый пост</a>
+{% if perms.blog.add_post %}
+    <a class="btn btn-success" href="{% url 'blog:post_create' %}">Добавить новый пост</a>
+{% endif %}
 
 {% endblock%}

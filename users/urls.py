@@ -1,8 +1,6 @@
-from django.contrib.auth.views import LoginView, LogoutView
-from django.template.defaulttags import url
+from django.contrib.auth.views import LogoutView, LoginView
 from django.urls import path
 
-from config import settings
 from users.apps import UsersConfig
 from users.views import RegisterView, ProfileView, recover_password
 

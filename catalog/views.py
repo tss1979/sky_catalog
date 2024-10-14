@@ -1,14 +1,15 @@
 from itertools import product
 
 from PIL.ImageCms import versions
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.db.backends.mysql.base import version
 from django.shortcuts import render
 from django.template.context_processors import request
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, ListView, TemplateView, UpdateView, DeleteView
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Version
 
 
@@ -24,6 +25,11 @@ class ProductListView(ListView):
             dict_product[prod] = Version.objects.filter(is_current=True, product=prod).first()
         context_data['object_list'] = dict_product
         return context_data
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.filter(is_published=True)
+        return qs
 
 class ProductDetailView(DetailView):
     model = Product
@@ -41,8 +47,19 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
-    form_class = ProductForm
     success_url = reverse_lazy('catalog:products')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.user:
+            return ProductForm
+        elif user.has_perm("catalog.update_published_status") and user.has_perm("catalog.update_description") and \
+             user.has_perm("catalog.change_category") :
+            return ProductModeratorForm
+        else:
+            raise PermissionDenied
+
+
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):

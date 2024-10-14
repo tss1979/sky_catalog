@@ -23,9 +23,15 @@
                     </ul>
                     <a type="button" class="btn btn-lg btn-block btn-outline-primary mb-2" href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a>
                     <button type="button" class="btn btn-lg btn-block btn-outline-primary mb-2">Купить</button>
-                    <a type="button" class="btn btn-lg btn-block btn-outline-warning mb-2" href="{% url 'catalog:product_update' product.pk %}">Изменить</a>
-                    <a type="button" class="btn btn-lg btn-block btn-outline-success mb-2" href="{% url 'catalog:product_create' %}">Добавить</a>
-                    <a type="button" class="btn btn-lg btn-block btn-outline-danger mb-2" href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
+                    {% if user.is_authenticated %}
+                        {% if user == product.user %}
+                           <a type="button" class="btn btn-lg btn-block btn-outline-warning mb-2" href="{% url 'catalog:product_update' product.pk %}">Изменить</a>
+                           <a type="button" class="btn btn-lg btn-block btn-outline-danger mb-2" href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
+                        {% elif perms.catalog.update_published_status and perms.catalog.update_description and perms.catalog.change_category %}
+                            <a type="button" class="btn btn-lg btn-block btn-outline-warning mb-2" href="{% url 'catalog:product_update' product.pk %}">Изменить</a>
+                        {% endif %}
+                        <a type="button" class="btn btn-lg btn-block btn-outline-success mb-2" href="{% url 'catalog:product_create' %}">Добавить</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
