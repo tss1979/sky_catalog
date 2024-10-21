@@ -1,16 +1,12 @@
-from itertools import product
 
-from PIL.ImageCms import versions
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
-from django.db.backends.mysql.base import version
-from django.shortcuts import render
-from django.template.context_processors import request
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, ListView, TemplateView, UpdateView, DeleteView
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Version
+from catalog.services import get_cached_categories
 
 
 # Create your views here.
@@ -59,9 +55,6 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         else:
             raise PermissionDenied
 
-
-
-
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:products')
@@ -85,6 +78,16 @@ class VersionDeleteView(DeleteView):
 
 class VersionListView(ListView):
     model = Version
+
+
+class CategoriesListView(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = get_cached_categories()
+        return context
+
+    template_name = "catalog.categories.html"
 
 
 
